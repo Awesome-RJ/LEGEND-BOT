@@ -144,7 +144,7 @@ async def _(event):
     if event.fwd_from:
         return
     animation_interval = 3
-    animation_ttl = range(0, 103)    
+    animation_ttl = range(103)
     await event.edit("Starting asf")
     animation_chars = [
 
@@ -188,7 +188,7 @@ async def pressf(f):
         for line in F_LENGTHS:
             c = max(round(line / len(arg)), 1)
             out += (arg * c) + "\n"
-        await f.edit("`" + out + "`")
+        await f.edit(f"`{out}`")
         
 @borg.on(admin_cmd(pattern="session$"))
 async def _(event):

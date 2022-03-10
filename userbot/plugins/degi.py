@@ -30,8 +30,8 @@ async def _(event):
     await event.edit("Wo DeGi TuM eKbAr MaNg KaR tOh DeKhO😄")
 
 
-@bot.on(admin_cmd(pattern=f"nehi$", outgoing=True))
-@bot.on(sudo_cmd(pattern=f"nehi$", allow_sudo=True))
+@bot.on(admin_cmd(pattern="nehi$", outgoing=True))
+@bot.on(sudo_cmd(pattern="nehi$", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return

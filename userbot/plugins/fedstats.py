@@ -32,7 +32,7 @@ async def _(event):
             try:
                 await conv.send_message("/start")
                 await conv.get_response()
-                await conv.send_message("/fedstat " + sysarg)
+                await conv.send_message(f"/fedstat {sysarg}")
                 audio = await conv.get_response()
                 if "Looks like" in audio.text:
                     await audio.click(0)
@@ -61,7 +61,7 @@ async def _(event):
         try:
             await conv.send_message("/start")
             await conv.get_response()
-            await conv.send_message("/fedinfo " + sysarg)
+            await conv.send_message(f"/fedinfo {sysarg}")
             audio = await conv.get_response()
             await ok.edit(audio.text + "\n\nFedInfo Excracted by LEGENDBOT")
         except YouBlockedUserError:

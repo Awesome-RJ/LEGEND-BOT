@@ -19,104 +19,102 @@ DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else "@teamishere"
 #@command(pattern="^.help ?(.*)")
 
 @borg.on(admin_cmd(pattern=r"help ?(.*)", outgoing=True))
-
 @borg.on(sudo_cmd(pattern=r"help ?(.*)", outgoing=True, allow_sudo=True))
-
 async def cmd_list(event):
 
-    if not event.text[0].isalpha() and event.text[0] not in ("/" , "#", "-", "_", "@"):
+    if event.text[0].isalpha() or event.text[0] in ("/", "#", "-", "_", "@"):
+        return
+    tgbotusername = Var.TG_BOT_USER_NAME_BF_HER
 
-        tgbotusername = Var.TG_BOT_USER_NAME_BF_HER
+    input_str = event.pattern_match.group(1)
 
-        input_str = event.pattern_match.group(1)
+    if tgbotusername is None or input_str == "text":
 
-        if tgbotusername is None or input_str == "text":
+        string = ""
 
-            string = ""
+        for i in CMD_LIST:
 
-            for i in CMD_LIST:
+            string += "â¡ï¸" + i + "\n"
 
-                string += "â¡ï¸" + i + "\n"
+            for iter_list in CMD_LIST[i]:
 
-                for iter_list in CMD_LIST[i]:
-
-                    string += "    " + str(iter_list) + ""
-
-                    string += "\n"
+                string += f"    {str(iter_list)}"
 
                 string += "\n"
 
-            if len(string) > 69:
+            string += "\n"
 
-                with io.BytesIO(str.encode(string)) as out_file:
+        if len(string) > 69:
 
-                    out_file.name = "cmd.txt"
+            with io.BytesIO(str.encode(string)) as out_file:
 
-                    await bot.send_file(
+                out_file.name = "cmd.txt"
 
-                        event.chat_id,
+                await bot.send_file(
 
-                        out_file,
+                    event.chat_id,
 
-                        force_document=True,
+                    out_file,
 
-                        allow_cache=False,
+                    force_document=True,
 
-                        caption="COMMANDS In LEGEND BOT",
+                    allow_cache=False,
 
-                        reply_to=reply_to_id
+                    caption="COMMANDS In LEGEND BOT",
 
-                    )
+                    reply_to=reply_to_id
 
-                    await event.delete()
+                )
 
-            else:
-
-                await event.edit(string)
-
-        elif input_str:
-
-            if input_str in CMD_LIST:
-
-                string = "Commands found in {}:\n".format(input_str)
-
-                for i in CMD_LIST[input_str]:
-
-                    string += "  " + i
-
-                    string += "\n"
-
-                await event.edit(string)
-
-            else:
-
-                await event.edit(input_str + " is not a valid plugin!")
+                await event.delete()
 
         else:
 
-            help_string = f"""Userbot Helper.. Provided by 🙂🙂{DEFAULTUSER}🙂🙂 \n
+            await event.edit(string)
+
+    elif input_str:
+
+        if input_str in CMD_LIST:
+
+            string = "Commands found in {}:\n".format(input_str)
+
+            for i in CMD_LIST[input_str]:
+
+                string += f"  {i}"
+
+                string += "\n"
+
+            await event.edit(string)
+
+        else:
+
+            await event.edit(f'{input_str} is not a valid plugin!')
+
+    else:
+
+        help_string = f"""Userbot Helper.. Provided by 🙂🙂{DEFAULTUSER}🙂🙂 \n
 
 Userbot Helper to reveal all the commands\nDo .help plugin_name for commands, in case popup doesn't appear."""
 
-            results = await bot.inline_query(  # pylint:disable=E0602
+        results = await bot.inline_query(  # pylint:disable=E0602
 
-                tgbotusername,
+            tgbotusername,
 
-                help_string
+            help_string
 
-            )
+        )
 
-            await results[0].click(
+        await results[0].click(
 
-                event.chat_id,
+            event.chat_id,
 
-                reply_to=event.reply_to_msg_id,
+            reply_to=event.reply_to_msg_id,
 
-                hide_via=True
+            hide_via=True
 
-            )
+        )
 
-            await event.delete()
+        await event.delete()
 
             
 

@@ -4,6 +4,7 @@ unzip usage: reply with zipped file .unzipper
 Coded by @furki
 """
 
+
 from datetime import datetime
 import zipfile
 from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
@@ -24,8 +25,8 @@ import patoolib
 import tarfile
 from userbot import CMD_HELP
 
-thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
-extracted = Config.TMP_DOWNLOAD_DIRECTORY + "extracted/"
+thumb_image_path = f'{Config.TMP_DOWNLOAD_DIRECTORY}/thumb_image.jpg'
+extracted = f'{Config.TMP_DOWNLOAD_DIRECTORY}extracted/'
 if not os.path.isdir(extracted):
     os.makedirs(extracted)
 
@@ -51,18 +52,22 @@ async def _(event):
                 )
             )
             directory_name = downloaded_file_name
-            await event.edit(downloaded_file_name)
+            await event.edit(directory_name)
         except Exception as e:  # pylint:disable=C0103,W0703
             await mone.edit(str(e))
-    zipfile.ZipFile(directory_name + '.zip', 'w', zipfile.ZIP_DEFLATED).write(directory_name)
+    zipfile.ZipFile(f'{directory_name}.zip', 'w', zipfile.ZIP_DEFLATED).write(
+        directory_name
+    )
+
     await borg.send_file(
         event.chat_id,
-        directory_name + ".zip",
+        f'{directory_name}.zip',
         caption="Zipped By LEGENDBOT",
         force_document=True,
         allow_cache=False,
         reply_to=event.message.id,
     )
+
     await event.edit("DONE!!!")
     await asyncio.sleep(5)
     await event.delete()
@@ -97,18 +102,23 @@ async def _(event):
             directory_name = downloaded_file_name
             await event.edit("creating rar archive, please wait..")
             # patoolib.create_archive(directory_name + '.7z',directory_name)
-            patoolib.create_archive(directory_name + ".rar",(directory_name,Config.TMP_DOWNLOAD_DIRECTORY))
+            patoolib.create_archive(
+                f'{directory_name}.rar',
+                (directory_name, Config.TMP_DOWNLOAD_DIRECTORY),
+            )
+
             # patoolib.create_archive("/content/21.yy Avrupa (1).pdf.zip",("/content/21.yy Avrupa (1).pdf","/content/"))
             await borg.send_file(
                 event.chat_id,
-                directory_name + ".rar",
+                f'{directory_name}.rar',
                 caption="rarred By LEGENDBOT",
                 force_document=True,
                 allow_cache=False,
                 reply_to=event.message.id,
             )
+
             try:
-                os.remove(directory_name + ".rar")
+                os.remove(f'{directory_name}.rar')
                 os.remove(directory_name)
             except:
                     pass
@@ -119,7 +129,7 @@ async def _(event):
             await mone.edit(str(e))
     elif input_str:
         directory_name = input_str
-        
+
         await event.edit("Local file compressed to `{}`".format(directory_name + ".rar"))
 
 
@@ -147,18 +157,23 @@ async def _(event):
             directory_name = downloaded_file_name
             await event.edit("creating 7z archive, please wait..")
             # patoolib.create_archive(directory_name + '.7z',directory_name)
-            patoolib.create_archive(directory_name + ".7z",(directory_name,Config.TMP_DOWNLOAD_DIRECTORY))
+            patoolib.create_archive(
+                f'{directory_name}.7z',
+                (directory_name, Config.TMP_DOWNLOAD_DIRECTORY),
+            )
+
             # patoolib.create_archive("/content/21.yy Avrupa (1).pdf.zip",("/content/21.yy Avrupa (1).pdf","/content/"))
             await borg.send_file(
                 event.chat_id,
-                directory_name + ".7z",
+                f'{directory_name}.7z',
                 caption="7z archived By LEGENDBOT",
                 force_document=True,
                 allow_cache=False,
                 reply_to=event.message.id,
             )
+
             try:
-                os.remove(directory_name + ".7z")
+                os.remove(f'{directory_name}.7z')
                 os.remove(directory_name)
             except:
                     pass
@@ -169,7 +184,7 @@ async def _(event):
             await mone.edit(str(e))
     elif input_str:
         directory_name = input_str
-        
+
         await event.edit("Local file compressed to `{}`".format(directory_name + ".7z"))
 
 
@@ -449,8 +464,8 @@ async def _(event):
     mone = await event.edit("Processing ...")
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
-    extracted = Config.TMP_DOWNLOAD_DIRECTORY + "extracted/"
-    thumb_image_path = Config.TMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
+    extracted = f'{Config.TMP_DOWNLOAD_DIRECTORY}extracted/'
+    thumb_image_path = f'{Config.TMP_DOWNLOAD_DIRECTORY}/thumb_image.jpg'
     if not os.path.isdir(extracted):
         os.makedirs(extracted)
     if event.reply_to_msg_id:

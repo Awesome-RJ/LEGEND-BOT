@@ -49,10 +49,10 @@ async def inline_id_handler(q_event: events.InlineQuery.Event):
         try:
             page = page[0]
             page = page.replace("page=", "")
-            match = match.replace("page=" + page[0], "")
+            match = match.replace(f"page={page[0]}", "")
         except IndexError:
             page = 1
-        search_args = (str(match), int(page))
+        search_args = str(match), page
         gsearch = GoogleSearch()
         gresults = await gsearch.async_search(*search_args)
         #msg = ""
@@ -72,7 +72,7 @@ async def inline_id_handler(q_event: events.InlineQuery.Event):
                     text=msg,
                     buttons=Button.switch_inline("Search Again", query="google ", same_peer=True)))
         await q_event.answer(miraculous)
-    if not q_event.query.user_id == bot.uid:
+    if q_event.query.user_id != bot.uid:
         resultm = builder.article(title="me not your bot",description="Mind Your Business",text="Hey U Must Use https://github.com/legendx22/LEGEND-BOT ",buttons=[[Button.switch_inline("Search Again", query="google ", same_peer=True)],], )
         await q_event.answer([resultm])
         return

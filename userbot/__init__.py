@@ -78,7 +78,7 @@ if bool(ENV):
     LOGSPAMMER = sb(os.environ.get("LOGSPAMMER", "False"))
     PATTERNS = os.environ.get("PATTERNS", ".;!,")
     COMMAND_HAND_LER = os.environ.get("COMMAND_HAND_LER", r"\.")
-  
+
     # Bleep Blop, this is a bot ;)
     PM_AUTO_BAN = sb(os.environ.get("PM_AUTO_BAN", "False"))
 
@@ -111,13 +111,12 @@ if bool(ENV):
 
     #make by LEGEND X 
     botnickname = os.environ.get("BOT_NICK_NAME", None)
-
 # Heroku Credentials for updater.
     HEROKU_MEMEZ = sb(os.environ.get("HEROKU_MEMEZ", "False"))
     HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME", None)
     HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY", None)
 
-   
+
     # Youtube API key
     YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", None)
 
@@ -133,7 +132,7 @@ if bool(ENV):
 
     # Clean Welcome
     CLEAN_WELCOME = sb(os.environ.get("CLEAN_WELCOME", "True"))
-    
+
     # Custom Module
     CUSTOM_PMPERMIT = os.environ.get("CUSTOM_PMPERMIT", None)
     CUSTOM_AFK = os.environ.get("CUSTOM_AFK", None)
@@ -152,13 +151,16 @@ if bool(ENV):
     LASTFM_USERNAME = os.environ.get("LASTFM_USERNAME", None)
     LASTFM_PASSWORD_PLAIN = os.environ.get("LASTFM_PASSWORD", None)
     LASTFM_PASS = pylast.md5(LASTFM_PASSWORD_PLAIN)
-    if not LASTFM_USERNAME == "None":
-        lastfm = pylast.LastFMNetwork(api_key=LASTFM_API,
-                                      api_secret=LASTFM_SECRET,
-                                      username=LASTFM_USERNAME,
-                                      password_hash=LASTFM_PASS)
-    else:
-        lastfm = None
+    lastfm = (
+        None
+        if LASTFM_USERNAME == "None"
+        else pylast.LastFMNetwork(
+            api_key=LASTFM_API,
+            api_secret=LASTFM_SECRET,
+            username=LASTFM_USERNAME,
+            password_hash=LASTFM_PASS,
+        )
+    )
 
     # Google Drive Module
     G_DRIVE_CLIENT_ID = os.environ.get("G_DRIVE_CLIENT_ID", None)

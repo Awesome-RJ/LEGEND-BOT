@@ -90,7 +90,7 @@ async def mega_downloader(megadl):
     file_url = data["url"]
     hex_key = data["hex_key"]
     hex_raw_key = data["hex_raw_key"]
-    temp_file_name = file_name + ".temp"
+    temp_file_name = f'{file_name}.temp'
     temp_file_path = os.path.join(TEMP_DOWNLOAD_DIRECTORY, temp_file_name)
     file_path = os.path.join(TEMP_DOWNLOAD_DIRECTORY, file_name)
     if os.path.isfile(file_path):
@@ -116,10 +116,11 @@ async def mega_downloader(megadl):
         estimated_total_time = round(downloader.get_eta())
         progress_str = "`{0}` | [{1}{2}] `{3}%`".format(
             status,
-            "".join(["▰" for i in range(math.floor(percentage / 10))]),
-            "".join(["▱" for i in range(10 - math.floor(percentage / 10))]),
+            "".join(["▰" for _ in range(math.floor(percentage / 10))]),
+            "".join(["▱" for _ in range(10 - math.floor(percentage / 10))]),
             round(percentage, 2),
         )
+
         diff = time.time() - start
         try:
             current_message = (

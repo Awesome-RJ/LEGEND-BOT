@@ -26,7 +26,7 @@ async def magnet_download(event):
 	if event.fwd_from:
 		return
 	var = event.pattern_match.group(1)
-	print(var)	
+	print(var)
 	uris = [var]
 
 	#Add URL Into Queue 
@@ -47,13 +47,17 @@ async def magnet_download(event):
 		file = aria2.get_download(gid)
 		complete = file.is_complete
 		try:
-			msg = "**Downloading File:** "+str(file.name) +"\n**Speed:** "+ str(file.download_speed_string())+"\n**Progress:** "+str(file.progress_string())+"\n**Total Size:** "+str(file.total_length_string())+"\n**ETA:**  "+str(file.eta_string())+"\n\n"  	
+			msg = (f"**Downloading File:** {str(file.name)}" + "\n**Speed:** " + str(
+			    file.download_speed_string()) + "\n**Progress:** " + str(
+			        file.progress_string()) + "\n**Total Size:** " + str(
+			            file.total_length_string()) + "\n**ETA:**  " + str(
+			                file.eta_string()) + "\n\n")
 			await event.edit(msg)
 			await asyncio.sleep(10)
 		except Exception as e:
 			# print(str(e))
 			pass	
-			
+
 	await event.edit("**File Downloaded Successfully:** `{}`".format(file.name))
 
 
@@ -62,7 +66,11 @@ async def progress_status(gid,event,previous):
 		file = aria2.get_download(gid)
 		if not file.is_complete:
 			if not file.error_message:
-				msg = "Downloading File: `"+str(file.name) +"`\nSpeed: "+ str(file.download_speed_string())+"\nProgress: "+str(file.progress_string())+"\nTotal Size: "+str(file.total_length_string())+"\nStatus: "+str(file.status)+"\nETA:  "+str(file.eta_string())+"\n\n"
+				msg = (f"Downloading File: `{str(file.name)}" + "`\nSpeed: " + str(
+				    file.download_speed_string()) + "\nProgress: " + str(
+				        file.progress_string()) + "\nTotal Size: " + str(
+				            file.total_length_string()) + "\nStatus: " + str(file.status) +
+				       "\nETA:  " + str(file.eta_string()) + "\n\n")
 				if previous != msg:
 					await event.edit(msg)
 					previous = msg
@@ -70,7 +78,7 @@ async def progress_status(gid,event,previous):
 				logger.info(str(file.error_message))
 				await event.edit("Error : `{}`".format(str(file.error_message)))		
 				return
-			await asyncio.sleep(EDIT_SLEEP_TIME_OUT)	
+			await asyncio.sleep(EDIT_SLEEP_TIME_OUT)
 			await progress_status(gid,event,previous)
 		else:
 			await event.edit("File Downloaded Successfully: `{}`".format(file.name))
@@ -91,5 +99,5 @@ async def progress_status(gid,event,previous):
 async def check_metadata(gid):
 	file = aria2.get_download(gid)
 	new_gid = file.followed_by_ids[0]
-	logger.info("Changing GID "+gid+" to "+new_gid)
+	logger.info(f"Changing GID {gid} to {new_gid}")
 	return new_gid	

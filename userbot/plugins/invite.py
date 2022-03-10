@@ -71,23 +71,28 @@ async def get_chatinfo(event):
 def user_full_name(user):
     names = [user.first_name, user.last_name]
     names = [i for i in list(names) if i]
-    full_name = ' '.join(names)
-    return full_name
+    return ' '.join(names)
 
 
 @bot.on(admin_cmd(pattern="inviteall ?(.*)"))
 @bot.on(sudo_cmd(pattern="inviteall ?(.*)", allow_sudo=True))
 async def get_users(event):   
-    sender = await event.get_sender() ; me = await event.client.get_me()
-    if not sender.id == me.id:
-        hell = await event.reply("`processing...`")
-    else:
-    	hell = await event.edit("`processing...`")
-    legendx22 = await get_chatinfo(event) ; chat = await event.get_chat()
+    sender = await event.get_sender()
+    me = await event.client.get_me()
+    hell = (
+        await event.edit("`processing...`")
+        if sender.id == me.id
+        else await event.reply("`processing...`")
+    )
+
+    legendx22 = await get_chatinfo(event)
+    chat = await event.get_chat()
     if event.is_private:
-              return await hell.edit("`Sorry, Can add users here`")    
-    s = 0 ; f = 0 ; error = 'None'   
-  
+              return await hell.edit("`Sorry, Can add users here`")
+    s = 0
+    f = 0
+    error = 'None'   
+
     await hell.edit("**TerminalStatus**\n\n`Collecting Users.......`")
     async for user in event.client.iter_participants(legendx22.full_chat.id):
                 try:
@@ -97,7 +102,7 @@ async def get_users(event):
                     s = s + 1                                                    
                     await hell.edit(f"**Terminal Running...**\n\n• Invited `{s}` people \n• Failed to Invite `{f}` people\n\n**× LastError:** `{error}`")                
                 except Exception as e:
-                    error = str(e) ; f = f + 1             
+                    error = str(e) ; f = f + 1
     return await hell.edit(f"**Terminal Finished** \n\n• Successfully Invited `{s}` people \n• failed to invite `{f}` people")
 
 

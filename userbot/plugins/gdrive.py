@@ -23,7 +23,7 @@ import httplib2
 
 
 # Path to token json file, it should be in same directory as script
-G_DRIVE_TOKEN_FILE = Var.TEMP_DOWNLOAD_DIRECTORY + "/auth_token.txt"
+G_DRIVE_TOKEN_FILE = f'{Var.TEMP_DOWNLOAD_DIRECTORY}/auth_token.txt'
 # Copy your credentials from the APIs Console
 CLIENT_ID = Var.G_DRIVE_CLIENT_ID
 CLIENT_SECRET = Var.G_DRIVE_CLIENT_SECRET
@@ -65,14 +65,19 @@ async def _(event):
             end = datetime.now()
             ms = (end - start).seconds
             required_file_name = downloaded_file_name
-            await mone.edit("Downloaded to `{}` in {} seconds.".format(downloaded_file_name, ms))
+            await mone.edit(
+                "Downloaded to `{}` in {} seconds.".format(
+                    required_file_name, ms
+                )
+            )
+
     elif input_str:
         input_str = input_str.strip()
         if os.path.exists(input_str):
             end = datetime.now()
             ms = (end - start).seconds
             required_file_name = input_str
-            await mone.edit("Found `{}` in {} seconds.".format(input_str, ms))
+            await mone.edit("Found `{}` in {} seconds.".format(required_file_name, ms))
         else:
             await mone.edit("File Not found in local server. Give me a file path :((")
             return False
@@ -170,10 +175,12 @@ async def _(event):
         if Var.AUTH_TOKEN_DATA is not None:
             with open(G_DRIVE_TOKEN_FILE, "w") as t_file:
                 t_file.write(Var.AUTH_TOKEN_DATA)
-        # Check if token file exists, if not create it by requesting authorization code
-        storage = None
-        if not os.path.isfile(G_DRIVE_TOKEN_FILE):
-            storage = await create_token_file(G_DRIVE_TOKEN_FILE, event)
+        storage = (
+            None
+            if os.path.isfile(G_DRIVE_TOKEN_FILE)
+            else await create_token_file(G_DRIVE_TOKEN_FILE, event)
+        )
+
         http = authorize(G_DRIVE_TOKEN_FILE, storage)
         f = open(G_DRIVE_TOKEN_FILE, "r")
         token_file_data = f.read()
@@ -231,7 +238,7 @@ async def DoTeskWithDir(http, input_directory, event, parent_id):
 # Get mime type and name of given file
 def file_ops(file_path):
     mime_type = guess_type(file_path)[0]
-    mime_type = mime_type if mime_type else "text/plain"
+    mime_type = mime_type or "text/plain"
     file_name = file_path.split("/")[-1]
     return file_name, mime_type
 
@@ -301,10 +308,11 @@ async def upload_file(http, file_path, file_name, mime_type, event, parent_id):
         if status:
             percentage = int(status.progress() * 100)
             progress_str = "[{0}{1}]\nProgress: {2}%\n".format(
-                "".join(["█" for i in range(math.floor(percentage / 5))]),
-                "".join(["░" for i in range(20 - math.floor(percentage / 5))]),
-                round(percentage, 2)
+                "".join(["█" for _ in range(math.floor(percentage / 5))]),
+                "".join(["░" for _ in range(20 - math.floor(percentage / 5))]),
+                round(percentage, 2),
             )
+
             current_message = f"Uploading to G-Drive:\nFile Name: `{file_name}`\n{progress_str}"
             if display_message != current_message:
                 try:
@@ -312,14 +320,12 @@ async def upload_file(http, file_path, file_name, mime_type, event, parent_id):
                     display_message = current_message
                 except Exception as e:
                     logger.info(str(e))
-                    pass
     file_id = response.get("id")
     # Insert new permissions
     drive_service.permissions().insert(fileId=file_id, body=permissions).execute()
     # Define file instance and get url for download
     file = drive_service.files().get(fileId=file_id).execute()
-    download_url = file.get("webContentLink")
-    return download_url
+    return file.get("webContentLink")
 
 
 #@command(pattern="^.gfolder ?(.*)")
@@ -327,7 +333,7 @@ async def upload_file(http, file_path, file_name, mime_type, event, parent_id):
 async def _(event):
     if event.fwd_from:
         return
-    folder_link = "https://drive.google.com/folderview?id="+parent_id    
+    folder_link = f"https://drive.google.com/folderview?id={parent_id}"
     await event.edit("`Here is Your G-Drive Folder link : `\n"+folder_link)
 
 CMD_HELP.update({
